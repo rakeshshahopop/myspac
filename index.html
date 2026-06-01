@@ -1,719 +1,736 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>myspace - Living Dashboard</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MySpace — Bento Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'DM Sans', sans-serif; background: #f5f4f0; }
-.app { display: flex; height: 680px; background: #f5f4f0; border-radius: 16px; overflow: hidden; border: 0.5px solid #e8e6e0; }
-.sidebar { width: 200px; background: #1c1c1a; display: flex; flex-direction: column; padding: 20px 0; flex-shrink: 0; }
-.sidebar-logo { padding: 0 20px 20px; font-size: 15px; font-weight: 500; color: #fff; letter-spacing: -0.3px; }
-.sidebar-logo span { color: #7F77DD; }
-.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 20px; font-size: 13px; color: #888; cursor: pointer; transition: all 0.15s; border-radius: 0; }
-.nav-item:hover { color: #ccc; background: rgba(255,255,255,0.05); }
-.nav-item.active { color: #fff; background: rgba(127,119,221,0.18); border-right: 2px solid #7F77DD; }
-.nav-item i { font-size: 16px; }
-.nav-section { font-size: 10px; color: #444; padding: 16px 20px 6px; letter-spacing: 0.5px; text-transform: uppercase; }
-.main { flex: 1; overflow-y: auto; padding: 24px; background: #faf9f7; }
-.top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-.top-bar h1 { font-size: 18px; font-weight: 500; color: #1c1c1a; }
-.top-bar .date { font-size: 12px; color: #888; }
-.cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
-.dash-card { background: #fff; border-radius: 14px; padding: 16px; border: 0.5px solid #e8e6e0; cursor: pointer; transition: border-color 0.15s; }
-.dash-card:hover { border-color: #7F77DD; }
-.dash-card.active-card { border: 2px solid #7F77DD; }
-.card-label { font-size: 11px; color: #888; margin-bottom: 6px; }
-.card-val { font-size: 22px; font-weight: 500; color: #1c1c1a; }
-.card-sub { font-size: 11px; color: #888; margin-top: 4px; }
-.prog-bar { height: 4px; background: #f0ede8; border-radius: 2px; margin-top: 10px; }
-.prog-fill { height: 100%; border-radius: 2px; transition: width 0.3s ease; }
-.detail-panel { background: #fff; border-radius: 14px; border: 0.5px solid #e8e6e0; overflow: hidden; }
-.panel-tabs { display: flex; border-bottom: 0.5px solid #e8e6e0; }
-.tab { padding: 10px 16px; font-size: 12px; color: #888; cursor: pointer; border-bottom: 2px solid transparent; }
-.tab.active { color: #7F77DD; border-bottom-color: #7F77DD; font-weight: 500; }
-.panel-body { padding: 16px; }
-.routine-day { font-size: 12px; color: #888; margin-bottom: 10px; }
-.routine-group { margin-bottom: 14px; }
-.group-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #aaa; margin-bottom: 6px; }
-.check-row { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; margin-bottom: 3px; background: #faf9f7; cursor: pointer; transition: background 0.1s; }
-.check-row:hover { background: #edf0ee; }
-.check-row.done { opacity: 0.55; }
-.cb { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid #d0cec8; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-.cb.checked { background: #1D9E75; border-color: #1D9E75; }
-.cb.checked::after { content: ''; width: 6px; height: 4px; border-left: 1.5px solid #fff; border-bottom: 1.5px solid #fff; transform: rotate(-45deg) translateY(-1px); display: block; }
-.check-label { font-size: 12px; color: #2c2c2a; flex: 1; }
-.check-time { font-size: 10px; color: #aaa; }
-.check-tag { font-size: 10px; padding: 2px 7px; border-radius: 999px; font-weight: 500; }
-.history-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 0.5px solid #f0ede8; }
-.history-date { font-size: 12px; color: #444; }
-.history-bar-wrap { flex: 1; margin: 0 12px; height: 6px; background: #f0ede8; border-radius: 3px; }
-.history-fill { height: 100%; border-radius: 3px; background: #7F77DD; transition: width 0.3s; }
-.history-pct { font-size: 11px; color: #888; min-width: 28px; text-align: right; }
-.streak-row { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
-.streak-dot { width: 18px; height: 18px; border-radius: 4px; background: #f0ede8; }
-.streak-dot.done { background: #7F77DD; }
-.streak-dot.today { background: #1D9E75; }
-.note-card-item { background: #faf9f7; border-radius: 8px; padding: 10px 12px; border: 0.5px solid #e8e6e0; position: relative; margin-bottom: 8px; }
-.note-input { width: 100%; font-size: 12px; border: 0.5px solid #e8e6e0; border-radius: 8px; padding: 8px 10px; color: #2c2c2a; background: #faf9f7; resize: none; outline: none; margin-top: 6px; }
-.note-input:focus { border-color: #7F77DD; }
-.todo-item { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 0.5px solid #f5f4f0; }
-.storage-item { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 0.5px solid #f5f4f0; }
-.file-icon { width: 28px; height: 28px; border-radius: 6px; background: #EEEDFE; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #7F77DD; }
-.action-i { cursor: pointer; color: #aaa; transition: color 0.15s; margin-left: auto; }
-.action-i:hover { color: #ff6b6b; }
-.inline-form { display: flex; gap: 6px; margin-top: 10px; background: #faf9f7; padding: 8px; border-radius: 8px; border: 0.5px solid #e8e6e0; }
-.inline-form input, .inline-form select { font-size: 12px; padding: 5px; border-radius: 4px; border: 0.5px solid #e8e6e0; outline: none; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:    #0d0f1a;
+    --navy2:   #141728;
+    --navy3:   #1c2038;
+    --purple:  #6c4fff;
+    --purple2: #8b6fff;
+    --sky:     #38bdf8;
+    --sky2:    #7dd3fc;
+    --mint:    #34d399;
+    --amber:   #fbbf24;
+    --rose:    #fb7185;
+    --text:    #e8eaf6;
+    --muted:   #7b82a8;
+    --border:  rgba(255,255,255,0.07);
+    --font-display: 'Syne', sans-serif;
+    --font-body:    'DM Sans', sans-serif;
+  }
+
+  html, body {
+    min-height: 100vh;
+    background: var(--navy);
+    color: var(--text);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+  }
+
+  /* ── Page layout ── */
+  .page {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: 100vh;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    background: var(--navy2);
+    border-right: 1px solid var(--border);
+    padding: 32px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    animation: slideLeft 0.5s ease both;
+  }
+  @keyframes slideLeft {
+    from { transform: translateX(-30px); opacity: 0; }
+    to   { transform: translateX(0);     opacity: 1; }
+  }
+  .logo {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 28px;
+    padding-left: 4px;
+  }
+  .logo span { color: var(--purple2); }
+  .nav-section {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 16px 8px 6px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 400;
+    color: var(--muted);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    text-decoration: none;
+  }
+  .nav-item:hover { background: var(--navy3); color: var(--text); }
+  .nav-item.active { background: var(--navy3); color: var(--text); font-weight: 500; }
+  .nav-item.active .nav-dot { background: var(--purple2); }
+  .nav-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid var(--muted);
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .nav-item:hover .nav-dot { background: var(--muted); }
+
+  /* ── Main content ── */
+  .main {
+    padding: 36px 36px 36px 32px;
+    overflow-y: auto;
+  }
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+    animation: fadeUp 0.5s 0.1s ease both;
+  }
+  .page-title {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .page-date {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+    font-weight: 300;
+  }
+  .avatar-ring {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--purple), var(--sky));
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 700; font-size: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  /* ── Bento grid ── */
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: auto;
+    gap: 14px;
+  }
+
+  /* tile base */
+  .tile {
+    border-radius: 18px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    animation: fadeUp 0.5s ease both;
+  }
+  .tile::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.2s;
+    background: rgba(255,255,255,0.02);
+  }
+  .tile:hover::before { opacity: 1; }
+
+  @keyframes fadeUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+
+  /* staggered delays */
+  .tile:nth-child(1)  { animation-delay: 0.10s; }
+  .tile:nth-child(2)  { animation-delay: 0.17s; }
+  .tile:nth-child(3)  { animation-delay: 0.24s; }
+  .tile:nth-child(4)  { animation-delay: 0.31s; }
+  .tile:nth-child(5)  { animation-delay: 0.38s; }
+  .tile:nth-child(6)  { animation-delay: 0.45s; }
+  .tile:nth-child(7)  { animation-delay: 0.52s; }
+
+  /* tile color variants */
+  .tile-dark    { background: var(--navy2); }
+  .tile-navy3   { background: var(--navy3); }
+  .tile-purple  { background: #2a1f6e; }
+  .tile-sky     { background: #0c2a3f; }
+  .tile-mint    { background: #0c2e24; }
+  .tile-amber   { background: #2e2008; }
+
+  /* span helpers */
+  .col-5  { grid-column: span 5; }
+  .col-4  { grid-column: span 4; }
+  .col-3  { grid-column: span 3; }
+  .col-7  { grid-column: span 7; }
+  .col-8  { grid-column: span 8; }
+  .col-12 { grid-column: span 12; }
+
+  /* ── Tile: Timer ── */
+  .tile-timer .t-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sky2);
+    margin-bottom: 10px;
+  }
+  .timer-digits {
+    font-family: var(--font-display);
+    font-size: 52px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: #fff;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .timer-digits span { color: var(--sky); }
+  .t-sub { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .timer-bar {
+    height: 3px;
+    background: rgba(56,189,248,0.15);
+    border-radius: 2px;
+    margin-top: 20px;
+    overflow: hidden;
+  }
+  .timer-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--purple), var(--sky));
+    border-radius: 2px;
+    transition: width 1s linear;
+  }
+  .timer-btns {
+    display: flex;
+    gap: 8px;
+    margin-top: 18px;
+  }
+  .tbtn {
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .tbtn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+  .tbtn.primary { background: var(--purple); border-color: var(--purple); color: #fff; }
+  .tbtn.primary:hover { background: var(--purple2); }
+
+  /* ── Tile: Check-in ── */
+  .tile-checkin .c-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--purple2);
+    margin-bottom: 10px;
+  }
+  .checkin-count {
+    font-family: var(--font-display);
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .checkin-count em { color: var(--purple2); font-style: normal; }
+  .checkin-count .total { font-size: 22px; color: var(--muted); font-weight: 400; }
+  .prog-label { font-size: 11px; color: var(--muted); margin-top: 10px; margin-bottom: 6px; }
+  .prog-track {
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .prog-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--purple), var(--purple2));
+    width: 0;
+    transition: width 1.2s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ── Tile: Streak ── */
+  .streak-num {
+    font-family: var(--font-display);
+    font-size: 56px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--amber);
+    line-height: 1;
+  }
+  .streak-fire { font-size: 28px; line-height: 1; }
+  .streak-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(251,191,36,0.6); font-weight: 600; margin-top: 4px; }
+  .streak-days {
+    display: flex;
+    gap: 5px;
+    margin-top: 16px;
+  }
+  .sday {
+    flex: 1;
+    height: 28px;
+    border-radius: 5px;
+    background: rgba(251,191,36,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    color: rgba(251,191,36,0.5);
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .sday.done { background: var(--amber); color: #1a1000; }
+
+  /* ── Tile: Routine ── */
+  .routine-title {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 14px;
+    letter-spacing: -0.01em;
+  }
+  .r-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 13px;
+    color: var(--muted);
+    transition: color 0.15s;
+  }
+  .r-item:last-child { border-bottom: none; }
+  .r-check {
+    width: 18px; height: 18px;
+    border-radius: 5px;
+    border: 1.5px solid rgba(255,255,255,0.12);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .r-check.done { background: var(--mint); border-color: var(--mint); }
+  .r-check.done::after { content: '✓'; font-size: 10px; color: #0a2e20; font-weight: 700; }
+  .r-item.done-item { color: rgba(255,255,255,0.3); text-decoration: line-through; }
+  .r-time { margin-left: auto; font-size: 11px; }
+
+  /* ── Tile: Notes ── */
+  .notes-header {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    letter-spacing: -0.01em;
+  }
+  .note-card {
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    border-left: 3px solid var(--sky);
+    font-size: 12.5px;
+    color: var(--text);
+    line-height: 1.5;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .note-card:hover { background: rgba(255,255,255,0.07); }
+  .note-card.purple-accent { border-left-color: var(--purple2); }
+  .note-card.mint-accent   { border-left-color: var(--mint); }
+  .note-tag {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-bottom: 4px;
+  }
+  .tag-sky    { background: rgba(56,189,248,0.12);  color: var(--sky2); }
+  .tag-purple { background: rgba(108,79,255,0.15);  color: var(--purple2); }
+  .tag-mint   { background: rgba(52,211,153,0.12);  color: var(--mint); }
+
+  /* ── Tile: Focus ── */
+  .focus-big {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--mint);
+    margin-top: 6px;
+  }
+  .focus-sub { font-size: 11px; color: rgba(52,211,153,0.5); letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; margin-top: 6px; }
+  .pulse-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--mint);
+    display: inline-block;
+    margin-right: 6px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(52,211,153,0.5); }
+    50%       { box-shadow: 0 0 0 7px rgba(52,211,153,0); }
+  }
+
+  /* ── Tile: Mini chart ── */
+  .chart-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--rose); margin-bottom: 10px; }
+  .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+    height: 60px;
+  }
+  .bar-col-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    height: 100%;
+    justify-content: flex-end;
+  }
+  .bar-col {
+    width: 100%;
+    border-radius: 4px 4px 0 0;
+    background: rgba(251,113,133,0.25);
+    transition: background 0.2s;
+    cursor: pointer;
+  }
+  .bar-col:hover, .bar-col.active { background: var(--rose); }
+  .bar-day { font-size: 9px; color: var(--muted); }
+  .chart-stat { margin-top: 12px; font-family: var(--font-display); font-size: 26px; font-weight: 800; letter-spacing: -0.03em; color: var(--rose); }
+  .chart-stat span { font-size: 12px; color: var(--muted); font-weight: 400; font-family: var(--font-body); }
+
+  /* ── Decor ── */
+  .tile-decor {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.06;
+    pointer-events: none;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .page { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .col-5, .col-4, .col-3, .col-7, .col-8 { grid-column: span 12; }
+    .main { padding: 20px; }
+  }
 </style>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght=400;500&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div class="app">
-  <div class="sidebar">
-    <div class="sidebar-logo">my<span>space</span></div>
-    <div class="nav-section">Main</div>
-    <div class="nav-item active" id="nav-dashboard" onclick="showPanel('dashboard')"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
-    <div class="nav-item" id="nav-routine" onclick="showPanel('routine')"><i class="ti ti-checkbox"></i> Routine</div>
-    <div class="nav-item" id="nav-notes" onclick="showPanel('notes')"><i class="ti ti-notes"></i> Notes</div>
-    <div class="nav-item" id="nav-todos" onclick="showPanel('todos')"><i class="ti ti-circle-check"></i> To-do</div>
-    <div class="nav-section">Track</div>
-    <div class="nav-item" id="nav-study" onclick="showPanel('study')"><i class="ti ti-brain"></i> Study</div>
-    <div class="nav-item" id="nav-history" onclick="showPanel('history')"><i class="ti ti-history"></i> History</div>
-    <div class="nav-item" id="nav-storage" onclick="showPanel('storage')"><i class="ti ti-folder"></i> Storage</div>
-    <div style="flex:1"></div>
-    <div class="nav-item"><i class="ti ti-settings"></i> Settings</div>
-  </div>
+<div class="page">
 
-  <div class="main" id="main-content">
-    
-    <div id="panel-dashboard">
-      <div class="top-bar">
-        <h1>Good morning</h1>
-        <span class="date id-current-date">Loading date...</span>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo">My<span>Space</span></div>
+
+    <span class="nav-section">Engine</span>
+    <a class="nav-item active" href="#">
+      <span class="nav-dot"></span> Dashboard
+    </a>
+    <a class="nav-item" href="#">
+      <span class="nav-dot"></span> Check-In
+    </a>
+
+    <span class="nav-section">Data</span>
+    <a class="nav-item" href="#">
+      <span class="nav-dot"></span> Routine Manager
+    </a>
+    <a class="nav-item" href="#">
+      <span class="nav-dot"></span> Notes Grid
+    </a>
+    <a class="nav-item" href="#">
+      <span class="nav-dot"></span> To-Do Tiles
+    </a>
+    <a class="nav-item" href="#">
+      <span class="nav-dot"></span> Study Timers
+    </a>
+    <a class="nav-item" href="#">
+      <span class="nav-dot"></span> Matrix History
+    </a>
+
+    <span class="nav-section">Customise</span>
+    <a class="nav-item" href="#">
+      <span class="nav-dot"></span> Themes Matrix
+    </a>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <div class="topbar">
+      <div>
+        <div class="page-title">Overview Workspace</div>
+        <div class="page-date" id="dateDisplay">Monday, June 1, 2026</div>
       </div>
-      <div class="cards-grid">
-        <div class="dash-card active-card" onclick="showPanel('routine')">
-          <div class="card-label"><i class="ti ti-checkbox" style="font-size:13px"></i> Today's routine</div>
-          <div class="card-val" id="dash-routine-val">0 / 0 <span style="font-size:14px;font-weight:400;color:#888">done</span></div>
-          <div class="prog-bar"><div class="prog-fill" id="dash-routine-progress" style="width:0%;background:#7F77DD"></div></div>
-          <div class="card-sub" id="dash-routine-sub">Syncing data...</div>
-        </div>
-        <div class="dash-card" onclick="showPanel('study')">
-          <div class="card-label"><i class="ti ti-brain" style="font-size:13px"></i> Study tracker</div>
-          <div class="card-val" id="dash-study-val">0h 0m</div>
-          <div class="prog-bar"><div class="prog-fill" id="dash-study-progress" style="width:0%;background:#1D9E75"></div></div>
-          <div class="card-sub" id="dash-study-sub">Daily target tracker</div>
-        </div>
-        <div class="dash-card" onclick="showPanel('notes')">
-          <div class="card-label"><i class="ti ti-notes" style="font-size:13px"></i> Notes</div>
-          <div class="card-val" id="dash-notes-val">0 <span style="font-size:14px;font-weight:400;color:#888">notes</span></div>
-          <div class="card-sub" id="dash-notes-sub">Syncs seamlessly on save</div>
-          <div style="margin-top:10px;font-size:11px;color:#aaa;background:#faf9f7;border-radius:6px;padding:6px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="dash-notes-snippet">No active notes...</div>
-        </div>
-        <div class="dash-card" onclick="showPanel('todos')">
-          <div class="card-label"><i class="ti ti-circle-check" style="font-size:13px"></i> To-do list</div>
-          <div class="card-val" id="dash-todo-val">0 / 0 <span style="font-size:14px;font-weight:400;color:#888">done</span></div>
-          <div class="prog-bar"><div class="prog-fill" id="dash-todo-progress" style="width:0%;background:#EF9F27"></div></div>
-          <div class="card-sub" id="dash-todo-sub">0 pending tasks</div>
-        </div>
-      </div>
-      <div class="detail-panel">
-        <div class="panel-tabs">
-          <div class="tab active">Routine preview</div>
-          <div class="tab" onclick="showPanel('history')">History</div>
-        </div>
-        <div class="panel-body">
-          <div class="routine-day" id="dash-preview-headline">Today · Syncing records...</div>
-          <div id="dash-routine-preview-container">
-            </div>
-          <div style="font-size:11px;color:#aaa;margin-top:8px;text-align:center">+ view all tasks · <span style="color:#7F77DD;cursor:pointer" onclick="showPanel('routine')">open full routine →</span></div>
-        </div>
-      </div>
+      <div class="avatar-ring">K</div>
     </div>
 
-    <div id="panel-routine" style="display:none">
-      <div class="top-bar"><h1>Daily routine</h1><span class="date id-current-date">...</span></div>
-      <div class="detail-panel">
-        <div class="panel-tabs">
-          <div class="tab active">Today</div>
-          <div class="tab" onclick="showPanel('history')">History</div>
-        </div>
-        <div class="panel-body">
-          
-          <div class="routine-group">
-            <div class="group-title">Morning</div>
-            <div id="routine-group-morning"></div>
-          </div>
-          
-          <div class="routine-group">
-            <div class="group-title">Study block</div>
-            <div id="routine-group-study"></div>
-          </div>
-          
-          <div class="routine-group">
-            <div class="group-title">Evening</div>
-            <div id="routine-group-evening"></div>
-          </div>
+    <!-- Bento grid -->
+    <div class="bento">
 
-          <div class="inline-form">
-            <input type="text" id="input-routine-text" placeholder="New routine item..." style="flex:2;">
-            <input type="text" id="input-routine-time" placeholder="e.g. 7:00 AM" style="flex:1;">
-            <select id="input-routine-group" style="flex:1;">
-              <option value="morning">Morning</option>
-              <option value="study">Study</option>
-              <option value="evening">Evening</option>
-            </select>
-            <input type="text" id="input-routine-tag" placeholder="Tag (Optional)" style="flex:1;">
-            <button id="btn-add-routine" style="padding:4px 10px; background:#7F77DD; color:#fff; border:none; border-radius:4px; font-size:11px; cursor:pointer;">+</button>
+      <!-- 1. Study Timer — col 5 -->
+      <div class="tile tile-sky tile-timer col-5">
+        <div class="tile-decor" style="width:180px;height:180px;background:var(--sky);bottom:-60px;right:-60px;"></div>
+        <div class="t-label">Study Session Track</div>
+        <div class="timer-digits" id="timerDisplay">
+          <span>00</span>:<span>00</span>:<span>00</span>
+        </div>
+        <div class="t-sub" id="timerStatus">Session not started</div>
+        <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
+        <div class="timer-btns">
+          <button class="tbtn primary" id="timerBtn" onclick="toggleTimer()">Start</button>
+          <button class="tbtn" onclick="resetTimer()">Reset</button>
+        </div>
+      </div>
+
+      <!-- 2. Check-in Progress — col 4 -->
+      <div class="tile tile-purple tile-checkin col-4">
+        <div class="tile-decor" style="width:140px;height:140px;background:var(--purple);top:-40px;right:-40px;"></div>
+        <div class="c-label">Check-in Progress</div>
+        <div class="checkin-count">
+          <em id="doneCount">0</em>
+          <span class="total"> / <span id="totalCount">5</span></span>
+        </div>
+        <div class="prog-label">Task compliance threshold — <span id="pct">0</span>%</div>
+        <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+        <div style="margin-top:16px;display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="tbtn" style="font-size:11px;padding:5px 10px;" onclick="addDone()">+ Complete Task</button>
+          <button class="tbtn" style="font-size:11px;padding:5px 10px;" onclick="removeDone()">− Undo</button>
+        </div>
+      </div>
+
+      <!-- 3. Streak — col 3 -->
+      <div class="tile tile-amber col-3" style="background:#1e1600;">
+        <div class="streak-fire">🔥</div>
+        <div class="streak-num">7</div>
+        <div class="streak-label">Day Streak</div>
+        <div class="streak-days">
+          <div class="sday done">M</div>
+          <div class="sday done">T</div>
+          <div class="sday done">W</div>
+          <div class="sday done">T</div>
+          <div class="sday done">F</div>
+          <div class="sday done">S</div>
+          <div class="sday done">S</div>
+        </div>
+      </div>
+
+      <!-- 4. Routine Manager — col 4 -->
+      <div class="tile tile-dark col-4">
+        <div class="routine-title">Today's Routine</div>
+        <div class="r-item done-item">
+          <div class="r-check done" onclick="toggleCheck(this)"></div>
+          Morning review
+          <span class="r-time" style="color:var(--mint);font-size:10px;">✓ Done</span>
+        </div>
+        <div class="r-item done-item">
+          <div class="r-check done" onclick="toggleCheck(this)"></div>
+          HTML practice — Box Model
+          <span class="r-time" style="color:var(--mint);font-size:10px;">✓ Done</span>
+        </div>
+        <div class="r-item">
+          <div class="r-check" onclick="toggleCheck(this)"></div>
+          CSS Flexbox exercises
+          <span class="r-time">3:00 PM</span>
+        </div>
+        <div class="r-item">
+          <div class="r-check" onclick="toggleCheck(this)"></div>
+          JavaScript intro — variables
+          <span class="r-time">5:00 PM</span>
+        </div>
+        <div class="r-item">
+          <div class="r-check" onclick="toggleCheck(this)"></div>
+          Evening W3Schools quiz
+          <span class="r-time">8:00 PM</span>
+        </div>
+      </div>
+
+      <!-- 5. Focus mode — col 3 -->
+      <div class="tile tile-mint col-3" style="background:#081e14;">
+        <div style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(52,211,153,0.5);margin-bottom:8px;">
+          <span class="pulse-dot"></span>Active Mode
+        </div>
+        <div class="focus-big">Deep<br>Focus</div>
+        <div class="focus-sub">No distractions on</div>
+        <div style="margin-top:18px;">
+          <button class="tbtn" onclick="this.textContent = this.textContent==='Pause Focus'?'Resume Focus':'Pause Focus'" style="font-size:11px;padding:6px 14px;border-color:rgba(52,211,153,0.2);color:var(--mint);">Pause Focus</button>
+        </div>
+      </div>
+
+      <!-- 6. Notes Grid — col 5 -->
+      <div class="tile tile-navy3 col-5">
+        <div class="notes-header">Active Notes Workspace</div>
+        <div class="note-card">
+          <div class="note-tag tag-sky">HTML</div>
+          <div>Box model: content → padding → border → margin. Use <code style="font-size:11px;color:var(--sky2);">box-sizing: border-box</code> always.</div>
+        </div>
+        <div class="note-card purple-accent">
+          <div class="note-tag tag-purple">CSS</div>
+          <div>Flexbox: <code style="font-size:11px;color:var(--purple2);">display:flex</code>, then justify-content + align-items control layout axes.</div>
+        </div>
+        <div class="note-card mint-accent">
+          <div class="note-tag tag-mint">JS</div>
+          <div>Variables: <code style="font-size:11px;color:var(--mint);">let</code> for changing values, <code style="font-size:11px;color:var(--mint);">const</code> for fixed ones. Avoid <code style="font-size:11px;color:var(--mint);">var</code>.</div>
+        </div>
+      </div>
+
+      <!-- 7. Weekly chart — col 4 -->
+      <div class="tile tile-dark col-4">
+        <div class="chart-label">Weekly Study Hours</div>
+        <div class="bar-chart">
+          <div class="bar-col-wrap">
+            <div class="bar-col" style="height:40%"></div>
+            <div class="bar-day">M</div>
           </div>
-          
-          <div style="margin-top:12px;background:#faf9f7;border-radius:8px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:12px;color:#888">Today's completion metrics</span>
-            <span style="font-size:14px;font-weight:500;color:#7F77DD" id="routine-completion-summary">0 / 0 — 0%</span>
+          <div class="bar-col-wrap">
+            <div class="bar-col" style="height:70%"></div>
+            <div class="bar-day">T</div>
+          </div>
+          <div class="bar-col-wrap">
+            <div class="bar-col" style="height:55%"></div>
+            <div class="bar-day">W</div>
+          </div>
+          <div class="bar-col-wrap">
+            <div class="bar-col active" style="height:90%"></div>
+            <div class="bar-day">T</div>
+          </div>
+          <div class="bar-col-wrap">
+            <div class="bar-col" style="height:65%"></div>
+            <div class="bar-day">F</div>
+          </div>
+          <div class="bar-col-wrap">
+            <div class="bar-col" style="height:80%"></div>
+            <div class="bar-day">S</div>
+          </div>
+          <div class="bar-col-wrap">
+            <div class="bar-col" style="height:45%"></div>
+            <div class="bar-day">S</div>
+          </div>
+        </div>
+        <div class="chart-stat">18.5 <span>hrs this week</span></div>
+      </div>
+
+      <!-- 8. Immediate Focus Checklist — col 3 -->
+      <div class="tile tile-dark col-3">
+        <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">Immediate Focus</div>
+        <div id="focusList">
+          <div class="r-item" style="padding:6px 0;">
+            <div class="r-check" onclick="toggleCheck(this)"></div>
+            <span style="font-size:12.5px;">Push today's HTML to VS Code</span>
+          </div>
+          <div class="r-item" style="padding:6px 0;">
+            <div class="r-check" onclick="toggleCheck(this)"></div>
+            <span style="font-size:12.5px;">Read W3Schools CSS units</span>
+          </div>
+          <div class="r-item" style="padding:6px 0;">
+            <div class="r-check" onclick="toggleCheck(this)"></div>
+            <span style="font-size:12.5px;">Watch Flexbox Froggy</span>
+          </div>
+          <div class="r-item" style="padding:6px 0;">
+            <div class="r-check" onclick="toggleCheck(this)"></div>
+            <span style="font-size:12.5px;">Log today's hours</span>
           </div>
         </div>
       </div>
-    </div>
 
-    <div id="panel-history" style="display:none">
-      <div class="top-bar"><h1>Routine history</h1><span class="date">Tracking Cloud Analytics</span></div>
-      <div class="detail-panel">
-        <div class="panel-body">
-          <div style="margin-bottom:14px">
-            <div style="font-size:12px;color:#888;margin-bottom:8px">Weekly activity streak tracker</div>
-            <div class="streak-row" id="history-streak-dots">
-              </div>
-          </div>
-          <div id="history-rows-container">
-            </div>
-          <div style="margin-top:12px;font-size:11px;color:#aaa;text-align:center">All history elements render inside cloud ledger modules</div>
-        </div>
-      </div>
     </div>
-
-    <div id="panel-notes" style="display:none">
-      <div class="top-bar"><h1>Notes</h1><span class="date" id="notes-count-header">0 notes saved</span></div>
-      <div class="detail-panel">
-        <div class="panel-tabs"><div class="tab active">All notes synced to Firestore</div></div>
-        <div class="panel-body">
-          <div style="display:flex;flex-direction:column;gap:8px" id="notes-list-container">
-            </div>
-          <div style="margin-top: 14px; border-top: 0.5px solid #e8e6e0; padding-top:12px;">
-            <input type="text" id="note-title-input" placeholder="Note heading title..." style="width:100%;font-size:12px;padding:7px 10px;border-radius:8px;border:0.5px solid #e8e6e0;outline:none;background:#faf9f7;">
-            <textarea class="note-input" id="note-content-input" rows="3" placeholder="Start typing a new note context..."></textarea>
-            <button id="btn-save-note" style="margin-top:8px;width:100%;padding:8px;font-size:12px;border-radius:8px;border:none;background:#7F77DD;color:white;font-weight:500;cursor:pointer;">Save Dynamic Note Entry</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="panel-todos" style="display:none">
-      <div class="top-bar"><h1>To-do list</h1><span class="date" id="todo-count-header">0 pending</span></div>
-      <div class="detail-panel">
-        <div class="panel-body">
-          <div id="todo-list-container">
-            </div>
-          <div style="margin-top:10px;display:flex;gap:8px">
-            <input id="todo-text-input" style="flex:1;font-size:12px;padding:7px 10px;border-radius:8px;border:0.5px solid #e8e6e0;background:#faf9f7;outline:none;" placeholder="Add a master plan or action target..." />
-            <select id="todo-tag-input" style="font-size:12px;padding:0 5px;border-radius:8px;border:0.5px solid #e8e6e0;background:#faf9f7;outline:none;">
-              <option value="">No Tag</option>
-              <option value="Overdue">Overdue</option>
-              <option value="Urgent">Urgent</option>
-              <option value="Later">Later</option>
-            </select>
-            <button id="btn-add-todo" style="padding:7px 14px;font-size:12px;border-radius:8px;border:0.5px solid #7F77DD;color:#534AB7;background:#EEEDFE;cursor:pointer;font-weight:500;">Add</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="panel-study" style="display:none">
-      <div class="top-bar"><h1>Study tracker</h1><span class="date">Performance Data Matrix</span></div>
-      <div class="detail-panel">
-        <div class="panel-body">
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
-            <div style="background:#faf9f7;border-radius:8px;padding:10px;text-align:center"><div style="font-size:10px;color:#888">Today Logged</div><div style="font-size:18px;font-weight:500;color:#1D9E75" id="study-stat-today">0h 0m</div></div>
-            <div style="background:#faf9f7;border-radius:8px;padding:10px;text-align:center"><div style="font-size:10px;color:#888">Weekly Total</div><div style="font-size:18px;font-weight:500;color:#7F77DD" id="study-stat-week">0h 0m</div></div>
-            <div style="background:#faf9f7;border-radius:8px;padding:10px;text-align:center"><div style="font-size:10px;color:#888">Target Goal</div><div style="font-size:18px;font-weight:500;color:#EF9F27">2h 30m</div></div>
-          </div>
-          <div style="font-size:11px;color:#888;margin-bottom:8px">Subject tracking breakdown (Live calculated weights)</div>
-          <div style="display:flex;flex-direction:column;gap:12px;" id="study-breakdown-container">
-            </div>
-          
-          <div class="inline-form" style="margin-top:20px;">
-            <select id="study-log-subject" style="flex:1;">
-              <option value="DSA / Algorithms">DSA / Algorithms</option>
-              <option value="Physics">Physics</option>
-              <option value="Reading">Reading</option>
-            </select>
-            <input type="number" id="study-log-minutes" placeholder="Minutes (e.g. 30)" style="flex:1;">
-            <button id="btn-log-study" style="padding:5px 12px;background:#1D9E75;color:white;border:none;border-radius:4px;cursor:pointer;font-size:11px;font-weight:500;">Log Study Session</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="panel-storage" style="display:none">
-      <div class="top-bar"><h1>Storage</h1><span class="date" id="storage-count-header">0 files logged</span></div>
-      <div class="detail-panel">
-        <div class="panel-body">
-          <div id="storage-list-container">
-            </div>
-          <div class="inline-form" style="margin-top:14px;">
-            <input type="text" id="storage-name" placeholder="Filename (e.g., cheatsheet.pdf)" style="flex:2;">
-            <input type="text" id="storage-size" placeholder="Size (e.g., 4 KB)" style="flex:1;">
-            <select id="storage-type" style="flex:1;">
-              <option value="file-text">Text (.txt)</option>
-              <option value="markdown">Markdown (.md)</option>
-              <option value="file">Data (.json / .bin)</option>
-            </select>
-            <button id="btn-add-storage" style="padding:5px 12px;background:#7F77DD;color:white;border:none;border-radius:4px;cursor:pointer;font-size:11px;">+ Upload</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  </main>
 </div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+<script>
+  // ── Date ──
+  const d = new Date();
+  document.getElementById('dateDisplay').textContent =
+    d.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
 
-  // TODO: Replace this exact block configuration mapping with your standard keys from Project Settings
-  const firebaseConfig = {
-    apiKey: "AIzaSyAqxUmi_1I6-Uc7SOpsCQDX3u0g4Ou8NfU",
-    authDomain: "myspace-7144e.firebaseapp.com",
-    projectId: "myspace-7144e",
-    storageBucket: "myspace-7144e.firebasestorage.app",
-    messagingSenderId: "547510372352",
-    appId: "1:547510372352:web:37e3de1b19dc84d1f5f0e5"
-  };
+  // ── Timer ──
+  let seconds = 0, running = false, interval = null;
+  const TARGET = 3600; // 1 hr session target
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  // --- SYSTEM DATE INJECTOR ENGINE ---
-  const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-  const formattedToday = new Date().toLocaleDateString('en-US', options);
-  document.querySelectorAll('.id-current-date').forEach(el => el.innerText = formattedToday);
-
-  // --- REACTIVE CORE UI PANEL ROUTER ---
-  window.showPanel = function(panelName) {
-    const panels = ['dashboard','routine','history','notes','todos','study','storage'];
-    panels.forEach(p => {
-      const targetPanel = document.getElementById('panel-' + p);
-      if (targetPanel) targetPanel.style.display = (p === panelName) ? 'block' : 'none';
-    });
-    
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    const activeNav = document.getElementById('nav-' + panelName);
-    if (activeNav) activeNav.classList.add('active');
-  };
-
-  // --- MODULE 1: CORE ROUTINE ENGINE AND AUTOMATED DATA SEEDER ---
-  const defaultRoutines = [
-    { text: "Wake up at 6:00 AM", time: "6:00 AM", group: "morning", done: true, tag: "" },
-    { text: "Drink water + stretch", time: "6:05 AM", group: "morning", done: true, tag: "" },
-    { text: "Morning exercise (30 min)", time: "6:15 AM", group: "morning", done: true, tag: "" },
-    { text: "Bath + get ready", time: "6:50 AM", group: "morning", done: true, tag: "" },
-    { text: "DSA practice (LeetCode — 1 problem)", time: "8:00 AM", group: "study", done: false, tag: "DSA" },
-    { text: "Homework / assignments", time: "9:00 AM", group: "study", done: false, tag: "School" },
-    { text: "Read 30 pages", time: "11:00 AM", group: "study", done: false, tag: "Reading" },
-    { text: "Review notes from today", time: "7:00 PM", group: "evening", done: false, tag: "" },
-    { text: "Plan tomorrow's tasks", time: "9:30 PM", group: "evening", done: false, tag: "" }
-  ];
-
-  function listenToRoutine() {
-    onSnapshot(collection(db, "routine"), (snapshot) => {
-      if (snapshot.empty) {
-        // Automatically populates Firestore database container if starting completely fresh
-        defaultRoutines.forEach(item => addDoc(collection(db, "routine"), item));
-        return;
-      }
-
-      // Capture operational targets
-      const morningWrap = document.getElementById('routine-group-morning');
-      const studyWrap = document.getElementById('routine-group-study');
-      const eveningWrap = document.getElementById('routine-group-evening');
-      const previewWrap = document.getElementById('dash-routine-preview-container');
-
-      morningWrap.innerHTML = ""; studyWrap.innerHTML = ""; eveningWrap.innerHTML = ""; previewWrap.innerHTML = "";
-
-      let totalCount = 0;
-      let doneCount = 0;
-
-      snapshot.forEach(docSnap => {
-        const id = docSnap.id;
-        const item = docSnap.data();
-        totalCount++;
-        if (item.done) doneCount++;
-
-        // Render full modular layout row match
-        const row = document.createElement('div');
-        row.className = `check-row ${item.done ? 'done' : ''}`;
-        let tagElement = item.tag ? `<span class="check-tag" style="background:#EEEDFE;color:#534AB7;margin-left:8px;">${item.tag}</span>` : '';
-        
-        row.innerHTML = `
-          <div class="cb ${item.done ? 'checked' : ''}"></div>
-          <span class="check-label">${item.text}</span>
-          <span class="check-time">${item.time}</span>
-          ${tagElement}
-          <i class="ti ti-trash action-i" style="margin-left:10px; font-size:13px;" data-id="${id}"></i>
-        `;
-
-        // Direct item checkbox click tracking toggle functionality
-        row.querySelector('.cb').onclick = async (e) => {
-          e.stopPropagation();
-          await updateDoc(doc(db, "routine", id), { done: !item.done });
-        };
-        row.querySelector('.action-i').onclick = async (e) => {
-          e.stopPropagation();
-          await deleteDoc(doc(db, "routine", id));
-        };
-
-        if (item.group === "morning") morningWrap.appendChild(row);
-        else if (item.group === "study") studyWrap.appendChild(row);
-        else eveningWrap.appendChild(row);
-
-        // Populate a preview row directly into the dashboard card view interface layout
-        if (previewWrap.children.length < 4) {
-          const pRow = document.createElement('div');
-          pRow.className = `check-row ${item.done ? 'done' : ''}`;
-          pRow.innerHTML = `
-            <div class="cb ${item.done ? 'checked' : ''}"></div>
-            <span class="check-label">${item.text}</span>
-            <span class="check-time">${item.time.split(' ')[0]}</span>
-          `;
-          previewWrap.appendChild(pRow);
-        }
-      });
-
-      // Calculate state adjustments live
-      const percentage = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
-      document.getElementById('dash-routine-val').innerHTML = `${doneCount} <span style="font-size:14px;font-weight:400;color:#888">/ ${totalCount} done</span>`;
-      document.getElementById('dash-routine-progress').style.width = `${percentage}%`;
-      document.getElementById('dash-routine-sub').innerText = `${totalCount - doneCount} tasks remaining · tap to open`;
-      document.getElementById('dash-preview-headline').innerText = `Today · Wednesday ${formattedToday.split(',')[1]} — ${percentage}% complete`;
-      document.getElementById('routine-completion-summary').innerText = `${doneCount} / ${totalCount} — ${percentage}%`;
-    });
+  function pad(n) { return String(n).padStart(2,'0'); }
+  function updateTimerDisplay() {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    document.getElementById('timerDisplay').innerHTML =
+      `<span>${pad(h)}</span>:<span>${pad(m)}</span>:<span>${pad(s)}</span>`;
+    const pct = Math.min((seconds / TARGET) * 100, 100);
+    document.getElementById('timerFill').style.width = pct + '%';
+    document.getElementById('timerStatus').textContent =
+      running ? 'Session in progress…' : (seconds > 0 ? 'Paused' : 'Session not started');
+  }
+  function toggleTimer() {
+    if (running) {
+      clearInterval(interval); running = false;
+      document.getElementById('timerBtn').textContent = 'Resume';
+    } else {
+      running = true;
+      document.getElementById('timerBtn').textContent = 'Pause';
+      interval = setInterval(() => { seconds++; updateTimerDisplay(); }, 1000);
+    }
+  }
+  function resetTimer() {
+    clearInterval(interval); running = false; seconds = 0;
+    document.getElementById('timerBtn').textContent = 'Start';
+    updateTimerDisplay();
   }
 
-  document.getElementById('btn-add-routine').onclick = async () => {
-    const text = document.getElementById('input-routine-text').value.trim();
-    const time = document.getElementById('input-routine-time').value.trim() || "12:00 PM";
-    const group = document.getElementById('input-routine-group').value;
-    const tag = document.getElementById('input-routine-tag').value.trim();
-    
-    if (!text) return;
-    await addDoc(collection(db, "routine"), { text, time, group, tag, done: false });
-    document.getElementById('input-routine-text').value = "";
-    document.getElementById('input-routine-tag').value = "";
-  };
-
-
-  // --- MODULE 2: DYNAMIC TASK LIST ENGINE (TODOS) ---
-  const defaultTodos = [
-    { text: "Morning run", done: true, tag: "" },
-    { text: "Review lecture slides", done: true, tag: "" },
-    { text: "Push algo project to GitHub", done: false, tag: "Overdue" },
-    { text: "Finish DSA problem set", done: false, tag: "" },
-    { text: "Call mom", done: false, tag: "" }
-  ];
-
-  function listenToTodos() {
-    onSnapshot(collection(db, "todos"), (snapshot) => {
-      if (snapshot.empty) {
-        defaultTodos.forEach(t => addDoc(collection(db, "todos"), t));
-        return;
-      }
-
-      const container = document.getElementById('todo-list-container');
-      container.innerHTML = "";
-      let total = 0; let done = 0; let overdueCount = 0;
-
-      snapshot.forEach(docSnap => {
-        const id = docSnap.id;
-        const item = docSnap.data();
-        total++;
-        if (item.done) done++;
-        if (item.tag === "Overdue" && !item.done) overdueCount++;
-
-        const div = document.createElement('div');
-        div.className = "todo-item";
-        let tagMarkup = item.tag ? `<span class="check-tag" style="background:${item.tag==='Overdue'?'#FAECE7':'#EEEDFE'};color:${item.tag==='Overdue'?'#712B13':'#534AB7'};margin-left:auto">${item.tag}</span>` : '';
-        
-        div.innerHTML = `
-          <div class="cb ${item.done ? 'checked' : ''}"></div>
-          <span style="font-size:12px; color:${item.done?'#aaa':'#2c2c2a'}; text-decoration:${item.done?'line-through':'none'}">${item.text}</span>
-          ${tagMarkup}
-          <i class="ti ti-trash action-i" style="${item.tag?'margin-left:10px':'margin-left:auto'}" data-id="${id}"></i>
-        `;
-
-        div.querySelector('.cb').onclick = async () => {
-          await updateDoc(doc(db, "todos", id), { done: !item.done });
-        };
-        div.querySelector('.action-i').onclick = async () => {
-          await deleteDoc(doc(db, "todos", id));
-        };
-        container.appendChild(div);
-      });
-
-      const pct = total > 0 ? (done / total) * 100 : 0;
-      document.getElementById('dash-todo-val').innerHTML = `${done} <span style="font-size:14px;font-weight:400;color:#888">/ ${total} done</span>`;
-      document.getElementById('dash-todo-progress').style.width = `${pct}%`;
-      document.getElementById('dash-todo-sub').innerText = `${total - done} pending · ${overdueCount} overdue`;
-      document.getElementById('todo-count-header').innerText = `${total - done} pending`;
-    });
+  // ── Check-in ──
+  let done = 0, total = 5;
+  function updateCheckin() {
+    document.getElementById('doneCount').textContent = done;
+    const p = Math.round((done / total) * 100);
+    document.getElementById('pct').textContent = p;
+    document.getElementById('progFill').style.width = p + '%';
   }
+  function addDone()    { if (done < total) { done++; updateCheckin(); } }
+  function removeDone() { if (done > 0)     { done--; updateCheckin(); } }
+  // Animate progress bar on load
+  setTimeout(() => { document.getElementById('progFill').style.width = '0%'; }, 100);
 
-  document.getElementById('btn-add-todo').onclick = async () => {
-    const textInput = document.getElementById('todo-text-input');
-    const tagInput = document.getElementById('todo-tag-input');
-    if (!textInput.value.trim()) return;
-
-    await addDoc(collection(db, "todos"), {
-      text: textInput.value.trim(),
-      tag: tagInput.value,
-      done: false
-    });
-    textInput.value = "";
-  };
-
-
-  // --- MODULE 3: REAL-TIME NOTEBOOK SYSTEM ---
-  function listenToNotes() {
-    const q = query(collection(db, "notes"), orderBy("timestamp", "desc"));
-    onSnapshot(q, (snapshot) => {
-      const container = document.getElementById('notes-list-container');
-      container.innerHTML = "";
-      let count = snapshot.size;
-
-      document.getElementById('dash-notes-val').innerHTML = `${count} <span style="font-size:14px;font-weight:400;color:#888">notes</span>`;
-      document.getElementById('notes-count-header').innerText = `${count} notes saved`;
-
-      if (count === 0) {
-        document.getElementById('dash-notes-snippet').innerText = "No active notes dynamic maps context...";
-        return;
-      }
-
-      let activeIndex = 0;
-      snapshot.forEach(docSnap => {
-        const id = docSnap.id;
-        const note = docSnap.data();
-
-        if (activeIndex === 0) {
-          document.getElementById('dash-notes-snippet').innerText = `${note.title}: ${note.content}`;
-        }
-        activeIndex++;
-
-        const item = document.createElement('div');
-        item.className = "note-card-item";
-        item.innerHTML = `
-          <div style="font-size:12px;font-weight:500;color:#2c2c2a">${note.title}</div>
-          <div style="font-size:11px;color:#aaa;margin-top:2px;white-space:pre-wrap;">${note.content}</div>
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
-            <span style="font-size:10px;color:#ccc">${note.dateString || 'Just now'}</span>
-            <i class="ti ti-trash action-i delete-note-btn" data-id="${id}" style="font-size:12px;"></i>
-          </div>
-        `;
-        item.querySelector('.delete-note-btn').onclick = async () => {
-          await deleteDoc(doc(db, "notes", id));
-        };
-        container.appendChild(item);
-      });
-    });
+  // ── Checkboxes ──
+  function toggleCheck(el) {
+    const item = el.closest('.r-item');
+    el.classList.toggle('done');
+    item.classList.toggle('done-item');
   }
-
-  document.getElementById('btn-save-note').onclick = async () => {
-    const title = document.getElementById('note-title-input').value.trim();
-    const content = document.getElementById('note-content-input').value.trim();
-    if (!title || !content) return;
-
-    await addDoc(collection(db, "notes"), {
-      title,
-      content,
-      timestamp: new Date().getTime(),
-      dateString: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-    });
-
-    document.getElementById('note-title-input').value = "";
-    document.getElementById('note-content-input').value = "";
-  };
-
-
-  // --- MODULE 4: HISTORICAL DATA LEDGER & METRICS GENERATOR ---
-  function setupHistoryLedger() {
-    const historyDotsContainer = document.getElementById('history-streak-dots');
-    const historyRowsContainer = document.getElementById('history-rows-container');
-    
-    // Generates tracking visualizations matching your historical components
-    const legacyHistory = [
-      { date: "Wed 27 May", pct: 44, active: true, today: true },
-      { date: "Tue 26 May", pct: 89, active: true },
-      { date: "Mon 25 May", pct: 100, active: true },
-      { date: "Sun 24 May", pct: 0, active: false },
-      { date: "Sat 23 May", pct: 78, active: true },
-      { date: "Fri 22 May", pct: 67, active: true },
-      { date: "Thu 21 May", pct: 89, active: true }
-    ];
-
-    historyDotsContainer.innerHTML = "";
-    historyRowsContainer.innerHTML = "";
-
-    legacyHistory.forEach(day => {
-      const dot = document.createElement('div');
-      dot.className = `streak-dot ${day.today ? 'today' : (day.active ? 'done' : '')}`;
-      historyDotsContainer.appendChild(dot);
-
-      const row = document.createElement('div');
-      row.className = "history-row";
-      row.innerHTML = `
-        <span class="history-date">${day.date}</span>
-        <div class="history-bar-wrap"><div class="history-fill" style="width:${day.pct}%"></div></div>
-        <span class="history-pct" style="${day.pct===100?'color:#1D9E75':''}">${day.pct}%</span>
-      `;
-      historyRowsContainer.appendChild(row);
-    });
-
-    const labelSpan = document.createElement('span');
-    labelSpan.style = "font-size:11px;color:#888;margin-left:6px;align-self:center";
-    labelSpan.innerText = "6/7 days active";
-    historyDotsContainer.appendChild(labelSpan);
-  }
-
-
-  // --- MODULE 5: REAL-TIME STUDY HOURLY LOGS ---
-  function listenToStudyLogs() {
-    onSnapshot(collection(db, "study"), (snapshot) => {
-      let subjectMap = { "DSA / Algorithms": 0, "Physics": 0, "Reading": 0 };
-      let globalMinutes = 0;
-
-      snapshot.forEach(docSnap => {
-        const log = docSnap.data();
-        const mins = parseInt(log.minutes) || 0;
-        globalMinutes += mins;
-        if (subjectMap[log.subject] !== undefined) {
-          subjectMap[log.subject] += mins;
-        }
-      });
-
-      // Format dynamic readouts cleanly
-      const hrs = Math.floor(globalMinutes / 60);
-      const remainingMins = globalMinutes % 60;
-      document.getElementById('dash-study-val').innerText = `${hrs}h ${remainingMins}m`;
-      document.getElementById('study-stat-today').innerText = `${hrs}h ${remainingMins}m`;
-      document.getElementById('study-stat-week').innerText = `${hrs}h ${remainingMins}m`;
-
-      // Target metric weighting parameters matching 150 min (2h 30m target threshold scaling loop)
-      const totalTarget = 150;
-      const globalProgressPct = Math.min((globalMinutes / totalTarget) * 100, 100);
-      document.getElementById('dash-study-progress').style.width = `${globalProgressPct}%`;
-      document.getElementById('dash-study-sub').innerText = `Goal: 2h 30m · Live cloud aggregated tracking updates`;
-
-      // Build specific layout row metrics blocks loops safely
-      const breakdownContainer = document.getElementById('study-breakdown-container');
-      breakdownContainer.innerHTML = "";
-
-      const colorMap = { "DSA / Algorithms": "#7F77DD", "Physics": "#1D9E75", "Reading": "#EF9F27" };
-
-      for (const [subj, val] of Object.entries(subjectMap)) {
-        const sHrs = Math.floor(val / 60);
-        const sMins = val % 60;
-        const barPct = Math.min((val / 120) * 100, 100); // Scaled relative weight bar metrics logic
-
-        const barDiv = document.createElement('div');
-        barDiv.innerHTML = `
-          <div style="display:flex;justify-content:space-between;font-size:11px;color:#555;margin-bottom:3px">
-            <span>${subj}</span>
-            <span>${sHrs}h ${sMins}m</span>
-          </div>
-          <div class="prog-bar"><div class="prog-fill" style="width:${barPct}%;background:${colorMap[subj]}"></div></div>
-        `;
-        breakdownContainer.appendChild(barDiv);
-      }
-    });
-  }
-
-  document.getElementById('btn-log-study').onclick = async () => {
-    const subject = document.getElementById('study-log-subject').value;
-    const minutesVal = document.getElementById('study-log-minutes').value;
-    if (!minutesVal || minutesVal <= 0) return;
-
-    await addDoc(collection(db, "study"), {
-      subject,
-      minutes: parseInt(minutesVal),
-      timestamp: new Date().getTime()
-    });
-    document.getElementById('study-log-minutes').value = "";
-  };
-
-
-  // --- MODULE 6: CLOUD INTEGRATED VIRTUAL STORAGE LEDGER ---
-  const defaultStorage = [
-    { name: "links.txt", size: "2 KB", info: "saved today", type: "file-text" },
-    { name: "notes.md", size: "8 KB", info: "synced", type: "markdown" },
-    { name: "todo_backup.json", size: "1 KB", info: "auto-backup", type: "file" }
-  ];
-
-  function listenToStorage() {
-    onSnapshot(collection(db, "storage"), (snapshot) => {
-      if (snapshot.empty) {
-        defaultStorage.forEach(f => addDoc(collection(db, "storage"), f));
-        return;
-      }
-
-      const container = document.getElementById('storage-list-container');
-      container.innerHTML = "";
-      document.getElementById('storage-count-header').innerText = `${snapshot.size} files indexed`;
-
-      snapshot.forEach(docSnap => {
-        const id = docSnap.id;
-        const file = docSnap.data();
-
-        const row = document.createElement('div');
-        row.className = "storage-item";
-        row.innerHTML = `
-          <div class="file-icon"><i class="ti ti-${file.type || 'file'}"></i></div>
-          <div style="flex:1">
-            <div style="font-size:12px;font-weight:500;color:#2c2c2a">${file.name}</div>
-            <div style="font-size:10px;color:#aaa">${file.size} · ${file.info || 'active index record'}</div>
-          </div>
-          <i class="ti ti-trash action-i remove-file-btn" data-id="${id}"></i>
-        `;
-        row.querySelector('.remove-file-btn').onclick = async () => {
-          await deleteDoc(doc(db, "storage", id));
-        };
-        container.appendChild(row);
-      });
-    });
-  }
-
-  document.getElementById('btn-add-storage').onclick = async () => {
-    const name = document.getElementById('storage-name').value.trim();
-    const size = document.getElementById('storage-size').value.trim() || "4 KB";
-    const type = document.getElementById('storage-type').value;
-
-    if (!name) return;
-    await addDoc(collection(db, "storage"), { name, size, type, info: "uploaded just now" });
-    document.getElementById('storage-name').value = "";
-    document.getElementById('storage-size').value = "";
-  };
-
-
-  // --- SYSTEM INITIALIZATION ORCHESTRATION ---
-  function initApp() {
-    listenToRoutine();
-    listenToTodos();
-    listenToNotes();
-    listenToStudyLogs();
-    listenToStorage();
-    setupHistoryLedger();
-  }
-  
-  initApp();
 </script>
 </body>
 </html>
